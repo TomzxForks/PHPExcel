@@ -80,6 +80,11 @@ class PHPExcel_Chart_GridLines extends PHPExcel_Chart_Properties
         'size' => null
      );
 
+    public function __construct($objectState = false)
+    {
+        $this->objectState = $objectState;
+    }
+
     /**
      * Get Object State
      *

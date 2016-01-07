@@ -51,7 +51,6 @@ class PHPExcel_Reader_Excel2007_Chart
         return null;
     }
 
-
     private static function readColor($color, $background = false)
     {
         if (isset($color["rgb"])) {
@@ -68,6 +67,7 @@ class PHPExcel_Reader_Excel2007_Chart
 
         $XaxisLabel = $YaxisLabel = $legend = $title = null;
         $dispBlanksAs = $plotVisOnly = null;
+        $majorGridlines = $minorGridlines = null;
 
         foreach ($chartElementsC as $chartElementKey => $chartElement) {
             switch ($chartElementKey) {
@@ -76,7 +76,7 @@ class PHPExcel_Reader_Excel2007_Chart
                         $chartDetailsC = $chartDetails->children($namespacesChartMeta['c']);
                         switch ($chartDetailsKey) {
                             case "plotArea":
-                                $plotAreaLayout = $XaxisLable = $YaxisLable = null;
+                                $plotAreaLayout = $XaxisLabel = $YaxisLabel = null;
                                 $plotSeries = $plotAttributes = array();
                                 foreach ($chartDetails as $chartDetailKey => $chartDetail) {
                                     switch ($chartDetailKey) {
@@ -86,6 +86,12 @@ class PHPExcel_Reader_Excel2007_Chart
                                         case "catAx":
                                             if (isset($chartDetail->title)) {
                                                 $XaxisLabel = self::chartTitle($chartDetail->title->children($namespacesChartMeta['c']), $namespacesChartMeta, 'cat');
+                                            }
+                                            if (isset($chartDetail->majorGridlines)) {
+                                                $majorGridlines = new PHPExcel_Chart_GridLines(true);
+                                            }
+                                            if (isset($chartDetail->minorGridlines)) {
+                                                $minorGridlines = new PHPExcel_Chart_GridLines(true);
                                             }
                                             break;
                                         case "dateAx":
@@ -198,7 +204,7 @@ class PHPExcel_Reader_Excel2007_Chart
                     }
             }
         }
-        $chart = new PHPExcel_Chart($chartName, $title, $legend, $plotArea, $plotVisOnly, $dispBlanksAs, $XaxisLabel, $YaxisLabel);
+        $chart = new PHPExcel_Chart($chartName, $title, $legend, $plotArea, $plotVisOnly, $dispBlanksAs, $XaxisLabel, $YaxisLabel, null, null, $majorGridlines, $minorGridlines);
 
         return $chart;
     }
